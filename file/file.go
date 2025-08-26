@@ -1,0 +1,125 @@
+package file
+
+import (
+	"time"
+
+	"github.com/heiku-jiqu/fileshare/user"
+)
+
+// File tracks the progress of a file upload.
+type File struct {
+	status           FileStatus
+	name             string
+	size             int64
+	parts            []Part
+	ownerId          user.UserId
+	sharedWith       []user.UserId
+	createdTimestamp time.Time
+	storageURL       string // where the actual data is stored at
+
+	// checksum         []byte
+	// checksumType     string
+}
+
+type FileStatus string
+
+const Started FileStatus = "STARTED"                   // Initial state, waiting for data to be uploaded
+const AllPartsUploaded FileStatus = "ALLPARTSUPLOADED" // State when all file parts have been uploaded but not merged
+const Completed FileStatus = "COMPLETED"               // Final success state when all parts are merged, ready to be downloaded
+const Aborted FileStatus = "ABORTED"                   // Error state when upload has been aborted at s3
+
+type Part struct {
+	number    int  // the part's order number
+	uploaded  bool // whether the part has been uploaded successfully
+	etag      string
+	byteStart int64
+	byteEnd   int64
+
+	// checksum     []byte // the part's checksum using checksumType algorithm
+	// checksumType checksumType
+}
+
+type checksumType string
+
+func NewFile(name string, size int64, userId user.UserId) File {
+	var parts []Part
+	var chunkSize int64 = 1_048_576 * 16 // 16 MB
+
+	for i, byterange := range chunkFile(size, chunkSize) {
+		parts = append(parts, Part{number: i, uploaded: false, etag: "", byteStart: byterange.startByte, byteEnd: byterange.endByte})
+	}
+
+	return File{
+		status:           Started,
+		name:             name,
+		size:             size,
+		parts:            parts,
+		ownerId:          userId,
+		sharedWith:       []user.UserId{},
+		createdTimestamp: time.Now(),
+		storageURL:       "",
+	}
+}
+
+func (f File) PendingParts() []Part {
+	out := []Part{}
+	for _, p := range f.parts {
+		if p.uploaded == false {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func (f File) MarkPartUploaded(partNum int, etag string) File {
+	if f.status == Completed || f.status == AllPartsUploaded || f.status == Aborted {
+		return f
+	}
+
+	for _, part := range f.parts {
+		if part.number == partNum {
+			part.etag = etag
+			part.uploaded = true
+		}
+	}
+
+	if f.isAllUploaded() {
+		f.status = Completed
+	}
+
+	return f
+}
+
+func (f File) MarkCompleted(storageURL string) File {
+	f.storageURL = storageURL
+	f.status = Completed
+	return f
+}
+
+func (f File) isAllUploaded() bool {
+	allUploaded := true
+	for _, part := range f.parts {
+		if !part.uploaded {
+			allUploaded = false
+			break
+		}
+	}
+	return allUploaded
+}
+
+type byteRange struct {
+	startByte int64
+	endByte   int64
+}
+
+func chunkFile(fileSize int64, chunkSize int64) []byteRange {
+	numChunks := (fileSize + (chunkSize - 1)) / chunkSize // int division rounded up
+	out := make([]byteRange, numChunks)
+	var start, end int64
+	for i := range numChunks {
+		start += chunkSize + 1
+		end = min(start+chunkSize, fileSize)
+		out[i] = byteRange{start, end}
+	}
+	return out
+}
