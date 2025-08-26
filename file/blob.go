@@ -22,9 +22,10 @@ func NewBlobStore(s3 *s3.Client) *S3BlobStore {
 type UploadId string
 
 func (b *S3BlobStore) CreateMultiPartUpload(file File) (UploadId, error) {
+	key := file.Key()
 	params := &s3.CreateMultipartUploadInput{
-		Bucket: b.bucket,
-		Key:    &file.Key(),
+		Bucket: &b.bucket,
+		Key:    &key,
 		//CheckSum
 	}
 	out, err := b.s3.CreateMultipartUpload(context.TODO(), params)
