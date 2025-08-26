@@ -9,16 +9,19 @@ import (
 // File tracks the progress of a file upload.
 type File struct {
 	status           FileStatus
-	name             string
+	name             string // name of the file
 	size             int64
-	parts            []Part
 	ownerId          user.UserId
 	sharedWith       []user.UserId
 	createdTimestamp time.Time
-	storageURL       string // where the actual data is stored at
+
+	// S3 related fields
+	parts             []Part
+	storageURL        string // where the actual data is stored at
+	multipartUploadId string // Amazon S3 multipart upload ID
 
 	// checksum         []byte
-	// checksumType     string
+	// checksumType     checksumType
 }
 
 type FileStatus string
@@ -26,14 +29,16 @@ type FileStatus string
 const Started FileStatus = "STARTED"                   // Initial state, waiting for data to be uploaded
 const AllPartsUploaded FileStatus = "ALLPARTSUPLOADED" // State when all file parts have been uploaded but not merged
 const Completed FileStatus = "COMPLETED"               // Final success state when all parts are merged, ready to be downloaded
+const TimedOut FileStatus = "TIMEDOUT"                 // Error state when upload window is over but file not completed uploaded
 const Aborted FileStatus = "ABORTED"                   // Error state when upload has been aborted at s3
 
 type Part struct {
-	number    int  // the part's order number
-	uploaded  bool // whether the part has been uploaded successfully
-	etag      string
+	number    int    // the part's order number
+	uploaded  bool   // whether the part has been uploaded successfully
+	etag      string // the s3 etag value of the part
 	byteStart int64
 	byteEnd   int64
+	chunkSize int64 // chunkSize = (byteEnd - byteStart + 1)
 
 	// checksum     []byte // the part's checksum using checksumType algorithm
 	// checksumType checksumType
