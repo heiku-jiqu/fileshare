@@ -70,6 +70,16 @@ func (b *S3BlobStore) GeneratePresignedUploadURLs(file File, uploadId UploadId) 
 	}, nil
 }
 
-func (b *S3BlobStore) CompleteMultiPartUpload(file File) error {
+func (b *S3BlobStore) CompleteMultiPartUpload(file File, uploadId UploadId) error {
+	params := &s3.CompleteMultipartUploadInput{
+		Bucket:   aws.String(b.bucket),
+		Key:      aws.String(file.Key()),
+		UploadId: aws.String(string(uploadId)),
+	}
+	_, err := b.s3.CompleteMultipartUpload(context.TODO(), params)
+	if err != nil {
+		log.Printf("Error completing multipart upload: %+v", err)
+		return err
+	}
 	return nil
 }
