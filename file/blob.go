@@ -1,6 +1,7 @@
 package file
 
 import (
+	"context"
 	"net/url"
 	"time"
 
@@ -9,7 +10,8 @@ import (
 
 // Interact with AWS S3
 type S3BlobStore struct {
-	s3 *s3.Client
+	s3     *s3.Client
+	bucket string
 }
 
 func NewBlobStore(s3 *s3.Client) *S3BlobStore {
@@ -20,7 +22,16 @@ func NewBlobStore(s3 *s3.Client) *S3BlobStore {
 type UploadId string
 
 func (b *S3BlobStore) CreateMultiPartUpload(file File) (UploadId, error) {
-	return "1", nil
+	params := &s3.CreateMultipartUploadInput{
+		Bucket: b.bucket,
+		Key:    &file.Key(),
+		//CheckSum
+	}
+	out, err := b.s3.CreateMultipartUpload(context.TODO(), params)
+	if err != nil {
+		return "", err
+	}
+	return UploadId(*out.UploadId), nil
 }
 
 // Info that browser needs to know to upload

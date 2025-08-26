@@ -66,6 +66,10 @@ func NewFile(name string, size int64, userId user.UserId) File {
 	}
 }
 
+// Returns the unique f.owner/f.name of the file
+func (f File) Key() string {
+	return string(f.ownerId) + "/" + f.name
+}
 func (f File) PendingParts() []Part {
 	out := []Part{}
 	for _, p := range f.parts {
