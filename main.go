@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -13,6 +14,10 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /", http.FileServerFS(t.Website))
+	mux.HandleFunc("GET /api/v1/healthcheck", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "ok")
+	})
+
 	s := &http.Server{
 		Addr:           ":8080",
 		Handler:        mux,
