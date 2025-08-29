@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/heiku-jiqu/fileshare/middleware"
 	t "github.com/heiku-jiqu/fileshare/web/template"
 )
 
@@ -27,14 +26,6 @@ func main() {
 	}
 	slog.Info("Listening and serving...")
 	log.Fatal(s.ListenAndServe())
-}
-
-func NewFilesRouter() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /{user}/files/", unimplemented)
-	mux.HandleFunc("POST /{user}/file/", unimplemented)    // initiate new upload
-	mux.HandleFunc("PUT /{user}/file/{id}", unimplemented) // complete upload?
-	return middleware.Logger(mux)
 }
 
 func unimplemented(w http.ResponseWriter, r *http.Request) {
