@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/heiku-jiqu/fileshare/middleware"
 	t "github.com/heiku-jiqu/fileshare/web/template"
 )
 
@@ -33,21 +34,7 @@ func NewFilesRouter() http.Handler {
 	mux.HandleFunc("GET /{user}/files/", unimplemented)
 	mux.HandleFunc("POST /{user}/file/", unimplemented)    // initiate new upload
 	mux.HandleFunc("PUT /{user}/file/{id}", unimplemented) // complete upload?
-	return logger(mux)
-}
-
-func logger(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var (
-			ip     = r.RemoteAddr
-			method = r.Method
-			url    = r.URL.String()
-			proto  = r.Proto
-		)
-		next.ServeHTTP(w, r)
-		slog.Info("Request served.", "protocol", proto, "method", method, "url", url, "ip", ip, "matched", r.Pattern)
-	})
-
+	return middleware.Logger(mux)
 }
 
 func unimplemented(w http.ResponseWriter, r *http.Request) {
