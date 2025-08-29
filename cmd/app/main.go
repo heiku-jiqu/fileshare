@@ -14,7 +14,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServerFS(t.Website))
 	mux.HandleFunc("/login", unimplemented)
-	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", NewApiRouter()))
+	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", NewFilesRouter()))
 
 	s := &http.Server{
 		Addr:           ":8080",
@@ -27,7 +27,7 @@ func main() {
 	log.Fatal(s.ListenAndServe())
 }
 
-func NewApiRouter() http.Handler {
+func NewFilesRouter() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthcheck", healthcheck)
 	mux.HandleFunc("GET /{user}/files/", unimplemented)
