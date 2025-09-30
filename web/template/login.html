@@ -12,9 +12,21 @@
         <nav>
             <a href="/login.html">Login</a>
         </nav>
-        <h1 class="hero-title">Fileshare</h1>
-        <p>This is a place to upload stuff.</p>
-        <button>Try Now</button>
+
+        <form action="/login" method="post">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="user" />
+            </div>
+
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" name="password" />
+            </div>
+
+            <input type="submit" value="Login" />
+        </form>
+
         <script src="index.js"></script>
     </body>
 </html>
