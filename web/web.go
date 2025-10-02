@@ -4,9 +4,14 @@ package web
 
 import (
 	"embed"
-	"io/fs"
+	"html/template"
 )
 
-//go:embed static/*.css static/*.html static/*.js
-var static embed.FS
-var Static, _ = fs.Sub(static, "static")
+//go:embed static/*.css static/*.js
+var Static embed.FS
+
+//go:embed template
+var t embed.FS
+
+var Index = template.Must(template.ParseFS(t, "template/base.tmpl.html", "template/components/*", "template/index.html"))
+var Login = template.Must(template.ParseFS(t, "template/base.tmpl.html", "template/components/*", "template/login.html"))
