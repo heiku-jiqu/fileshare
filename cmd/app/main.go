@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	t "github.com/heiku-jiqu/fileshare/web/template"
+	"github.com/heiku-jiqu/fileshare/web"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	login := NewLogin(sessionManager)
 
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServerFS(t.Website))
+	mux.Handle("/", http.FileServerFS(web.Static))
 	mux.HandleFunc("/healthcheck", Healthcheck)
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", NewFilesRouter()))
 	mux.HandleFunc("POST /login", login.LoginPostHandler)
