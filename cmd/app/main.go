@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/heiku-jiqu/fileshare/middleware"
 	"github.com/heiku-jiqu/fileshare/web"
 )
 
@@ -29,7 +30,7 @@ func main() {
 
 	s := &http.Server{
 		Addr:           ":8080",
-		Handler:        sessionManager.LoadAndSave(mux),
+		Handler:        middleware.Logger(sessionManager.LoadAndSave(mux)),
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
