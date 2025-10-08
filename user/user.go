@@ -1,3 +1,7 @@
 package user
 
-type UserId string
+type UserId int
+
+type User struct {
+	id UserId
+}
