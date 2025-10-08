@@ -8,8 +8,8 @@ import (
 
 // File tracks the progress of a file upload.
 type File struct {
-	status           FileStatus
-	name             string // name of the file
+	Status           FileStatus
+	Name             string // name of the file
 	size             int64
 	ownerId          user.UserId
 	sharedWith       []user.UserId
@@ -55,8 +55,8 @@ func NewFile(name string, size int64, userId user.UserId) File {
 	}
 
 	return File{
-		status:           Started,
-		name:             name,
+		Status:           Started,
+		Name:             name,
 		size:             size,
 		parts:            parts,
 		ownerId:          userId,
@@ -68,7 +68,7 @@ func NewFile(name string, size int64, userId user.UserId) File {
 
 // Returns the unique f.owner/f.name of the file
 func (f File) Key() string {
-	return string(f.ownerId) + "/" + f.name
+	return string(f.ownerId) + "/" + f.Name
 }
 func (f File) PendingParts() []Part {
 	out := []Part{}
@@ -81,7 +81,7 @@ func (f File) PendingParts() []Part {
 }
 
 func (f File) MarkPartUploaded(partNum int, etag string) File {
-	if f.status == Completed || f.status == AllPartsUploaded || f.status == Aborted {
+	if f.Status == Completed || f.Status == AllPartsUploaded || f.Status == Aborted {
 		return f
 	}
 
@@ -93,7 +93,7 @@ func (f File) MarkPartUploaded(partNum int, etag string) File {
 	}
 
 	if f.isAllUploaded() {
-		f.status = Completed
+		f.Status = Completed
 	}
 
 	return f
@@ -101,7 +101,7 @@ func (f File) MarkPartUploaded(partNum int, etag string) File {
 
 func (f File) MarkCompleted(storageURL string) File {
 	f.storageURL = storageURL
-	f.status = Completed
+	f.Status = Completed
 	return f
 }
 
