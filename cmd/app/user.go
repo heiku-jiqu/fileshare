@@ -33,14 +33,14 @@ func (app Login) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.PostFormValue("password")
 
 	if user != app.hardcodedUser {
-		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(app.hardcodedPassword), 14)
 	err = bcrypt.CompareHashAndPassword(hash, []byte(password))
 	if err != nil {
-		http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 	app.sessionManager.Put(r.Context(), UserContextKey, user)
