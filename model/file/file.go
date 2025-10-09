@@ -8,6 +8,7 @@ import (
 
 // File tracks the progress of a file upload.
 type File struct {
+	Id               int
 	Status           FileStatus
 	Name             string // name of the file
 	size             int64
