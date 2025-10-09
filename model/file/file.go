@@ -3,7 +3,7 @@ package file
 import (
 	"time"
 
-	"github.com/heiku-jiqu/fileshare/user"
+	"github.com/heiku-jiqu/fileshare/model/user"
 )
 
 // File tracks the progress of a file upload.

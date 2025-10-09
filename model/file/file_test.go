@@ -3,7 +3,7 @@ package file
 import (
 	"testing"
 
-	"github.com/heiku-jiqu/fileshare/user"
+	"github.com/heiku-jiqu/fileshare/model/user"
 )
 
 func TestFile(t *testing.T) {
@@ -11,11 +11,11 @@ func TestFile(t *testing.T) {
 	const filesize int64 = 20 * 1024 * 1024 // 20 MiB
 	userId := user.UserId(1)
 	file := NewFile(filename, filesize, userId)
-	if file.name != filename {
-		t.Errorf("Expected filename %s, got %s", filename, file.name)
+	if file.Name != filename {
+		t.Errorf("Expected filename %s, got %s", filename, file.Name)
 	}
-	if Started != file.status {
-		t.Errorf("Expected status %s, got %s", Started, file.status)
+	if Started != file.Status {
+		t.Errorf("Expected status %s, got %s", Started, file.Status)
 	}
 
 	uploadInfo, err := blobStore.GeneratePresignedUploadURLs(file)

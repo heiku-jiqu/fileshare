@@ -1,8 +1,8 @@
-package main
+package files
 
 import (
-	"github.com/heiku-jiqu/fileshare/file"
-	"github.com/heiku-jiqu/fileshare/user"
+	"github.com/heiku-jiqu/fileshare/model/file"
+	"github.com/heiku-jiqu/fileshare/model/user"
 )
 
 func filesDB() []file.File {

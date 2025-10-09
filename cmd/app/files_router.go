@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	f "github.com/heiku-jiqu/fileshare/appsvc/files"
 )
 
 func NewFilesRouter() http.Handler {
@@ -14,7 +16,7 @@ func NewFilesRouter() http.Handler {
 }
 
 func GetFiles(w http.ResponseWriter, r *http.Request) {
-	files := ListFiles()
+	files := f.ListFiles()
 	for i, file := range files {
 		fmt.Fprintf(w, "%d: %s\t%s\n", i, file.Name, file.Status)
 	}
