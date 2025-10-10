@@ -27,6 +27,9 @@ func (db *FilesDB) GetLatest(ctx context.Context, num int) ([]file.File, error) 
 	out := make([]file.File, num)
 	for i := range num {
 		idx := db.currId - i
+		if idx < 0 {
+			break
+		}
 		out[i] = db.store[idx]
 	}
 	return out, nil
