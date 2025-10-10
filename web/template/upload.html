@@ -24,8 +24,14 @@
     <input type="input" name="x-amz-meta-tag" value="" /><br />
     <input type="hidden" name="Policy" value="<Base64-encoded policy string>" />
     <input type="hidden" name="X-Amz-Signature" value="<signature-value>" />
-    File:
-    <input type="file" name="file" /> <br />
+    <div>
+        <label id="drop-zone">
+            File:
+            <input type="file" name="file" class="hidden" />
+        </label>
+        <ul id="file-preview"></ul>
+        <button id="clear-btn">Clear</button>
+    </div>
     <!-- The elements after this will be ignored -->
     <input type="submit" name="submit" value="Upload to Amazon S3" />
 </form>
