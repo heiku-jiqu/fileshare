@@ -10,7 +10,7 @@ import (
 // FilesRepo provides a Repository to store / get File.
 type FilesRepo interface {
 	// GetLatest list of uploaded files.
-	GetLatest(ctx context.Context, num int) ([]file.File, error)
+	GetLatest(ctx context.Context, num int, userId user.UserId) ([]file.File, error)
 	// Insert a new file
 	Insert(ctx context.Context, f file.File) error
 }

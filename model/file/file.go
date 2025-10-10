@@ -60,7 +60,7 @@ func NewFile(name string, size int64, userId user.UserId) File {
 		Name:             name,
 		size:             size,
 		parts:            parts,
-		ownerId:          userId,
+		OwnerId:          userId,
 		sharedWith:       []user.UserId{},
 		createdTimestamp: time.Now(),
 		storageURL:       "",
@@ -69,7 +69,7 @@ func NewFile(name string, size int64, userId user.UserId) File {
 
 // Returns the unique f.owner/f.name of the file
 func (f File) Key() string {
-	return string(f.ownerId) + "/" + f.Name
+	return string(f.OwnerId) + "/" + f.Name
 }
 func (f File) PendingParts() []Part {
 	out := []Part{}

@@ -26,7 +26,14 @@ func NewFilesRouter() http.Handler {
 }
 
 func (h *handler) GetFiles(w http.ResponseWriter, r *http.Request) {
-	files, err := h.app.GetLatest(r.Context(), 5)
+	userString := r.PathValue("user")
+	userId, err := strconv.Atoi(userString)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	files, err := h.app.GetLatest(r.Context(), 5, user.UserId(userId))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
