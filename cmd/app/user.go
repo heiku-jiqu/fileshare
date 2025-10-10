@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/heiku-jiqu/fileshare/web"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,6 +60,6 @@ func CreateUserPostHandler(w http.ResponseWriter, r *http.Request) {
 	log.Print(user, hash)
 }
 
-func LoginPage(w http.ResponseWriter, r *http.Request) {
-
+func (app *Login) LoginPage(w http.ResponseWriter, r *http.Request) {
+	web.Login.Execute(w, nil)
 }

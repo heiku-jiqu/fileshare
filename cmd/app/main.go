@@ -24,9 +24,7 @@ func main() {
 	mux.HandleFunc("/healthcheck", Healthcheck)
 	mux.Handle("/api/v1/", http.StripPrefix("/api/v1", NewFilesRouter()))
 	mux.HandleFunc("POST /login", login.LoginPostHandler)
-	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		web.Login.Execute(w, nil)
-	})
+	mux.HandleFunc("/login", login.LoginPage)
 
 	s := &http.Server{
 		Addr:           ":8080",
