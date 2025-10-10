@@ -12,7 +12,7 @@ type File struct {
 	Status           FileStatus
 	Name             string // name of the file
 	size             int64
-	ownerId          user.UserId
+	OwnerId          user.UserId
 	sharedWith       []user.UserId
 	createdTimestamp time.Time
 

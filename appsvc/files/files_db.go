@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/heiku-jiqu/fileshare/model/file"
+	"github.com/heiku-jiqu/fileshare/model/user"
 )
 
 // FilesDB implements the interface FilesInterface that is required by FilesApp
@@ -23,14 +24,18 @@ func (db *FilesDB) Insert(ctx context.Context, f file.File) error {
 	return nil
 }
 
-func (db *FilesDB) GetLatest(ctx context.Context, num int) ([]file.File, error) {
-	out := make([]file.File, num)
+func (db *FilesDB) GetLatest(ctx context.Context, num int, userId user.UserId) ([]file.File, error) {
+	out := make([]file.File, 0, num)
 	for i := range num {
 		idx := db.currId - i
 		if idx < 0 {
 			break
 		}
-		out[i] = db.store[idx]
+		f := db.store[idx]
+		if f.OwnerId != userId {
+			continue
+		}
+		out = append(out, f)
 	}
 	return out, nil
 }
