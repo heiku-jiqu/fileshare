@@ -26,6 +26,8 @@ func main() {
 	mux.HandleFunc("POST /login", login.LoginPostHandler)
 	mux.HandleFunc("/login", login.LoginPage)
 
+	mux.HandleFunc("/upload", UploadPage)
+
 	s := &http.Server{
 		Addr:           ":8080",
 		Handler:        middleware.Logger(sessionManager.LoadAndSave(mux)),
@@ -39,4 +41,8 @@ func main() {
 
 func unimplemented(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "unimplemented")
+}
+
+func UploadPage(w http.ResponseWriter, r *http.Request) {
+	web.Upload.Execute(w, nil)
 }
